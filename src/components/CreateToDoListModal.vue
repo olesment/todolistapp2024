@@ -23,11 +23,14 @@
 export default 
 {
     name:"CreateToDoModal",
+    props: {
+        toDoLists: Array
+    },
     data(){
         return {
             message: "Create and name ToDoList",
             toDoListName:'',
-            toDoLists: [], // array of todo lists
+            //toDoLists: [], Moved to App.vue
             toDoListCustomClass:''
         }
     },
@@ -37,39 +40,24 @@ export default
         {
             const trimmedName = this.toDoListName.trim().toLowerCase(); //Take inputted To Do List Name and trim it and unify the name
 
-            if(this.toDoListName.trim().toLowerCase() !== '')
+            if(trimmedName !== '')
             {
-                let nameAlreadyExists=false;
-                for(let i=0; i<this.toDoLists.length; i++)
+                if (this.$props.toDoLists.some(function(list){return list.trimmedName === trimmedName;}))
                 {
-                    if (this.toDoLists[i].name===trimmedName)
-                    {
-                        nameAlreadyExists = true;
-                        alert("This name Exists, pick another name");
-                        break;
-                    }
-                }
-                if(!nameAlreadyExists)
-                {
-                    const newToDoList = 
-                    {
-                        fullName: this.toDoListName,
-                        trimmedName: trimmedName,
-                        class:this.toDoListCustomClass
-                    }
-                    this.toDoLists.push(newToDoList);
+                    alert("This name Exists, pick another name");
+                    return;
+                } else {
+                    const newToDoList = {fullName: this.toDoListName,
+                                        trimmedName: trimmedName,
+                                        class:this.toDoListCustomClass}
+                    this.$props.toDoLists.push(newToDoList);
                     console.log("Added List:" ,this.toDoLists + "to toDo Lists");
+                    this.$emit("toDoListCreated", newToDoList)
                 }
-                else
-                {
-                    alert("Todo with this name already exists, pick another name")
-                }
+            } else {
+                alert("Please name the toDoList")   
             }
-            else
-            {
-            console.log('please enter a name for ToDoList.')
-            }
-        }
+        }   
     }
 }
 

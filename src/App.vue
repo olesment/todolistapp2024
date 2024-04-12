@@ -2,7 +2,16 @@
   <div id="createApp">
     <button type="button" class="createToDoModalVisibilityToggle" @click = "showCreateTodoModal">Create New Todo List</button>
 
-    <CreateToDoListModal v-show= isToDoCreationModalVisible @close="closeToDoCreateModal" />
+    <CreateToDoListModal 
+      v-show= isToDoCreationModalVisible 
+      @close="closeToDoCreateModal"
+      :to-do-lists="toDoLists" 
+      @toDoListCreated="handleCreatedToDoList"
+    />
+    <div v-for="(toDoList, index) in toDoLists" :key="index">
+      {{ toDoList.fullName }} - {{ toDoList.class }}
+      <button></button>
+    </div> 
   </div>
 </template>
 
@@ -17,12 +26,16 @@ export default {
   },
   data() {
     return{
-       isToDoCreationModalVisible:false,
+      toDoLists:[],
+      isToDoCreationModalVisible:false,
     };
   },
   methods:{
     showCreateTodoModal(){
       this.isToDoCreationModalVisible = true;
+    },
+    handleCreatedtoDoList(newToDoList){
+      this.toDoLists.push(newToDoList);
     },
     closeToDoCreateModal(){
       this.isToDoCreationModalVisible = false;
