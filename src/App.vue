@@ -3,13 +3,14 @@
     <button type="button" class="createToDoModalVisibilityToggle" @click = "showCreateTodoModal">Create New Todo List</button>
 
     <CreateToDoListModal 
-      v-show= isToDoCreationModalVisible 
+      v-show="isToDoCreationModalVisible"
       @close="closeToDoCreateModal"
       :to-do-lists="toDoLists" 
       @toDoListCreated="handleCreatedToDoList"
+      @newTaskCreated="handleNewTask"
     />
     <div v-for="(toDoList, index) in toDoLists" :key="index">
-      {{ toDoList.fullName }} - {{ toDoList.class }}
+        {{ toDoList.fullName }} - {{ toDoList.class }}
       <button></button>
     </div> 
   </div>
@@ -36,12 +37,15 @@ export default {
     },
     handleCreatedtoDoList(newToDoList){
       this.toDoLists.push(newToDoList);
+      this.isToDoCreationModalVisible=false;
     },
     closeToDoCreateModal(){
       this.isToDoCreationModalVisible = false;
-    }
+    },
+    
+}
   }
-};
+
 </script>
 
 <style>

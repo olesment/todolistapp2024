@@ -7,12 +7,20 @@
                 
                 <slot><input v-model="toDoListCustomClass" placeholder="Designate todo in a class"/></slot>
                 <slot>
-                    <button v-on:click="createToDoList">Create</button>
+                    <button v-on:click="createToDoList">Assign</button>
                 </slot>
-                <footer class="create-todo-modal-footer">
-                    <slot name="create-todo-modal-footer-slot">
-                        <button class="create-todo-modal-close-button">Close Dialog</button>
-                    </slot>
+                
+                <div v-if="showTaskInput">
+                    <input v-model="newTaskName" placeholder="EnterTaskName">
+                    <button v-on:click="addTask">Add task</button>
+                </div>
+                    <div v-if="toDoListNamePreview">{{ toDoListNamePreview }}</div>
+                    <div v-if="tasksPreview.length>0">
+                        <div id="taskDiv" v-for="(task, index) in tasksPreview" :key="index">{{ task }}</div>
+                        <button class="createToDoModal" @click="createToDo">Create the ToDo List</button>
+                    </div>
+                <footer class="create-todo-modal-footer"> 
+                    <!--<button class="createToDoModal" @click="createToDo">Create the ToDo List</button>-->
                 </footer>
             </body>
         </div>
@@ -23,16 +31,25 @@
 export default 
 {
     name:"CreateToDoModal",
-    props: {
-        toDoLists: Array
-    },
-    data(){
+    data()
+    {
         return {
             message: "Create and name ToDoList",
             toDoListName:'',
             //toDoLists: [], Moved to App.vue
-            toDoListCustomClass:''
-        }
+            toDoListCustomClass:'',
+            newTaskName:'',
+            showTaskInput:false,
+            toDoListNamePreview:false,
+            tasksPreview:[],
+            toDoList:
+            {
+                fullName:"",
+                trimmedName:"",
+                class:"",
+                tasks:[]
+            }
+        };
     },
     methods: 
     {
@@ -41,24 +58,42 @@ export default
             const trimmedName = this.toDoListName.trim().toLowerCase(); //Take inputted To Do List Name and trim it and unify the name
 
             if(trimmedName !== '')
-            {
-                if (this.$props.toDoLists.some(function(list){return list.trimmedName === trimmedName;}))
-                {
-                    alert("This name Exists, pick another name");
-                    return;
-                } else {
-                    const newToDoList = {fullName: this.toDoListName,
-                                        trimmedName: trimmedName,
-                                        class:this.toDoListCustomClass}
-                    this.$props.toDoLists.push(newToDoList);
-                    console.log("Added List:" ,this.toDoLists + "to toDo Lists");
-                    this.$emit("toDoListCreated", newToDoList)
+            {   
+                this.toDoList = {
+                    fullName: this.toDoListName,
+                    trimmedName: trimmedName,
+                    class: this.ToDoListCustomClass,
+                    tasks: this.toDoList.tasks
                 }
+
+                this.showTaskInput=true;
+                this.toDoListNamePreview=this.toDoListName;
+
             } else {
-                alert("Please name the toDoList")   
+                alert("Please name the toDoList");
+            }},
+            addTask: function() {
+                const newTask = { name: this.newTaskName, done: false };
+                this.toDoList.tasks.push(newTask);
+                this.newTaskName = "";
+                this.tasksPreview.push(newTask.name);
+            },
+            createToDo: function(){    
+                this.$emit("toDoListCreated",this.toDoList)
+                alert(JSON.stringify(this.toDoList));
+            },
+            closeModal: function(){
+                this.$emit("close");
             }
-        }   
-    }
+        },
+        watch: {
+            toDoList:{
+                handler(){
+                    this.createToDo();
+                },
+                deep: true
+            }
+        }
 }
 
 </script>
@@ -100,5 +135,10 @@ export default
         color:white;
         background:#4aae9b;
         border-radius:2px;
+    }
+    #taskDiv {
+        border:solid 2px;
+        border-color:black;
+        
     }
 </style>
