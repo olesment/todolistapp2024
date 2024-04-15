@@ -28,16 +28,18 @@
                     </div>
                 <!--Start showing the tasks preview when the freshToDoList freshToDoListTaskArray starts to have members-->
                     <div v-if="freshToDoList.freshToDoListsTasksArray !=='' ">   
-                        <!--For each task this should creaste a DIV that exerts the tasks in the preview and adds edit and delete button behind the task-->
+                        <!--For each task this should create a DIV that exerts the tasks in the preview and adds edit and delete button behind the task-->
                         <div id="freshToDoListTasksPreviewDiv" 
                                 v-for="(freshTask, index) in freshToDoList.freshToDoListsTasksArray" :key="index">{{ freshTask.done ? 'Done' : 'Not Done' }} - {{ freshTask.name }}
-                                <div v-if="taskNameChangeVisibilityToggleDiv">
-                                    <input v-model="newTaskName" 
-                                           type="text" 
-                                           placeholder="Enter new task name"/>
-                                    <button id="newTaskNewNameSaveButton" v-on:click="saveNewNameForTask(index)">Save</button>
-                                    
-                                </div>
+                                <div v-if="taskNameChangeVisibilityToggleDiv"> 
+                                    <div v-if="freshTask.isBeingEdited">
+                                        <input v-model="newTaskName" 
+                                                type="text" 
+                                                placeholder="Enter new task name"/>
+                                        <button id="newTaskNewNameSaveButton" v-on:click="saveNewNameForTask(index)">Save</button>
+                                        
+                                    </div>
+                                 </div>
                                 
                         <!--FOR FURTHER IMPLEMENTATION 
                             Edit and delete buttons should be next to or after the task for the case when user would want to change something in the task. Ideally there should be only delete buttonand edit it would be nice to have A field where user could place a curson and edit on the fly-->
@@ -76,7 +78,8 @@ export default
             //toDoLists: [], Moved to App.vue
             freshToDoListPreview:false,
             taskNameChangeVisibilityToggleDiv:false,
-            newTaskName:''
+            newTaskName:'',
+            isBeingEdited:false
         };
     },
     methods: 
@@ -127,9 +130,9 @@ export default
         editTaskInFreshToDoListTasksArray: function(index, newTaskName){
             //makes the task name editing dialog visible
             this.taskNameChangeVisibilityToggleDiv=true;
+            //this.$set(this.freshToDoList.freshToDoListsTasksArray[index],'editing',true)
+            this.freshToDoList.freshToDoListsTasksArray[index].isBeingEdited='true';
             //deletes old task name hopefully
-            //this.freshToDoList.freshToDoListsTasksArray[index].name='';
-            //assigns newTaskName from corresponding input field. hopefully.
             newTaskName=this.newTaskName;
             this.freshToDoList.freshToDoListsTasksArray[index].name=newTaskName;
             
@@ -137,8 +140,10 @@ export default
         saveNewNameForTask(index){
             //this should change the name of this task.
             this.freshToDoList.freshToDoListsTasksArray[index].name=this.newTaskName;
+            this.newTaskName='';
             //closes the task name editing dialog. 
             this.taskNameChangeVisibilityToggleDiv=false;
+            
         },
         confirmNewToDoListAndEndCreation: function(){
             this.$emit("freshToDoListCreatedAndSent", this.freshToDoList)
