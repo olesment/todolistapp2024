@@ -31,9 +31,17 @@
                         <!--For each task this should creaste a DIV that exerts the tasks in the preview and adds edit and delete button behind the task-->
                         <div id="freshToDoListTasksPreviewDiv" 
                                 v-for="(freshTask, index) in freshToDoList.freshToDoListsTasksArray" :key="index">{{ freshTask.done ? 'Done' : 'Not Done' }} - {{ freshTask.name }}
+                                <div v-if="taskNameChangeVisibilityToggleDiv">
+                                    <input v-model="newTaskName" 
+                                           type="text" 
+                                           placeholder="Enter new task name"/>
+                                    <button id="newTaskNewNameSaveButton" v-on:click="saveNewNameForTask(index)">Save</button>
+                                    
+                                </div>
+                                
                         <!--FOR FURTHER IMPLEMENTATION 
                             Edit and delete buttons should be next to or after the task for the case when user would want to change something in the task. Ideally there should be only delete buttonand edit it would be nice to have A field where user could place a curson and edit on the fly-->
-                                <button v-on:click="editTaskInFreshToDoListTasksArray" id="freshToDoListsTaskEditButton">Edit</button>
+                                <button v-on:click="editTaskInFreshToDoListTasksArray(index, freshTask.name)" id="freshToDoListsTaskEditButton">Edit</button>
                                 <button v-on:click="deleteTaskInFreshToDoListTasksArray" id="freshToDoListsTaskDeleteButton">Delete</button>
                                 
                         </div>  
@@ -66,7 +74,9 @@ export default
             message: "Create and name ToDoList",
             freshToDoListName:'', // Ensures that fresh ToDo List name field is empty in the beginning. 
             //toDoLists: [], Moved to App.vue
-            freshToDoListPreview:false
+            freshToDoListPreview:false,
+            taskNameChangeVisibilityToggleDiv:false,
+            newTaskName:''
         };
     },
     methods: 
@@ -114,8 +124,21 @@ export default
         deleteTaskInFreshToDoListTasksArray: function(index){
             this.freshToDoList.freshToDoListsTasksArray.splice(index-1,1);
         },
-        editTaskInFreshToDoListTasksArray: function(index){
-            this.freshToDoList.freshToDoListsTasksArray[index-1].name
+        editTaskInFreshToDoListTasksArray: function(index, newTaskName){
+            //makes the task name editing dialog visible
+            this.taskNameChangeVisibilityToggleDiv=true;
+            //deletes old task name hopefully
+            //this.freshToDoList.freshToDoListsTasksArray[index].name='';
+            //assigns newTaskName from corresponding input field. hopefully.
+            newTaskName=this.newTaskName;
+            this.freshToDoList.freshToDoListsTasksArray[index].name=newTaskName;
+            
+        },
+        saveNewNameForTask(index){
+            //this should change the name of this task.
+            this.freshToDoList.freshToDoListsTasksArray[index].name=this.newTaskName;
+            //closes the task name editing dialog. 
+            this.taskNameChangeVisibilityToggleDiv=false;
         },
         confirmNewToDoListAndEndCreation: function(){
             this.$emit("freshToDoListCreatedAndSent", this.freshToDoList)
