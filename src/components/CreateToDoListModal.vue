@@ -148,7 +148,12 @@ export default
         },
         confirmNewToDoListAndEndCreation: function(){
             this.$emit("freshToDoListCreatedAndSent", this.freshToDoList)
-            console.log("This freshToDoList Was created, confirm cliched, event emitted, following sent:", this.freshToDoList);
+            console.log("This freshToDoList Was created, confirm cliched, event emitted, following    sent:\n" 
+                        + "name:" + this.freshToDoList.freshToDoListName + 
+                        "\nclass:" + this.freshToDoList.freshToDoListClass + 
+                        "\ntrimmedName" + this.freshToDoList.freshToDoListTrimmedName + 
+                        "\ntasks" + this.freshToDoList.freshToDoListsTasksArray);
+            
             //clear all fields:
             this.freshToDoListName='';
             this.freshToDoListCustomClass='';
@@ -162,6 +167,7 @@ export default
                 freshToDoListTrimmedName: '',
                 freshToDoListsTasksArray: []
             };
+            console.log("This freshToDoList state after the event was sent:", this.freshToDoList);
         }
     }   
 }
