@@ -27,14 +27,15 @@
                         <button v-on:click="addTaskToFreshToDoListTasks" id="addTaskBtn">Add task</button>
                     </div>
                 <!--Start showing the tasks preview when the freshToDoList freshToDoListTaskArray starts to have members-->
-                    <div v-if="freshToDoList.freshToDoListsTaskArray !=='' ">   
+                    <div v-if="freshToDoList.freshToDoListsTasksArray !=='' ">   
                         <!--For each task this should creaste a DIV that exerts the tasks in the preview and adds edit and delete button behind the task-->
                         <div id="freshToDoListTasksPreviewDiv" 
                                 v-for="(freshTask, index) in freshToDoList.freshToDoListsTasksArray" :key="index">{{ freshTask.done ? 'Done' : 'Not Done' }} - {{ freshTask.name }}
                         <!--FOR FURTHER IMPLEMENTATION 
                             Edit and delete buttons should be next to or after the task for the case when user would want to change something in the task. Ideally there should be only delete buttonand edit it would be nice to have A field where user could place a curson and edit on the fly-->
-                                <button id="freshToDoListsTaskEditButton">Edit</button>
-                                <button id="freshToDoListsTaskDeleteButton">Delete</button>
+                                <button v-on:click="editTaskInFreshToDoListTasksArray" id="freshToDoListsTaskEditButton">Edit</button>
+                                <button v-on:click="deleteTaskInFreshToDoListTasksArray" id="freshToDoListsTaskDeleteButton">Delete</button>
+                                
                         </div>  
                     </div>
                 </div>
@@ -100,13 +101,21 @@ export default
         addTaskToFreshToDoListTasks()
         {
             // This should capture thge name of the fresh toDoListTask that was just inputted to the input field. And put that in an object. Object because task must get tis doneness property too, that should get changed later as task gets done on the main page. 
-            const freshToDoListNewTask = {name:this.freshToDoListNewTaskName, done:false};
+            const freshToDoListNewTask = {
+                                            name:this.freshToDoListNewTaskName, 
+                                            done:false};
             // as soon as the new task is created it gets pushed to the task artray of object that later gets emitted from the Modal.
             this.freshToDoList.freshToDoListsTasksArray.push(freshToDoListNewTask);
 
             this.freshToDoListNewTaskName=''; 
             console.log("fresh ToDo List Status" + this.freshToDoList.freshToDoListsTasksArray);
             this.$refs.freshToDoListNewTaskNameInputField.focus();
+        },
+        deleteTaskInFreshToDoListTasksArray: function(index){
+            this.freshToDoList.freshToDoListsTasksArray.splice(index-1,1);
+        },
+        editTaskInFreshToDoListTasksArray: function(index){
+            this.freshToDoList.freshToDoListsTasksArray[index-1].name
         },
         confirmNewToDoListAndEndCreation: function(){
             this.$emit("freshToDoListCreatedAndSent", this.freshToDoList)
