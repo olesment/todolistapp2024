@@ -148,11 +148,12 @@ export default
         },
         confirmNewToDoListAndEndCreation: function(){
             this.$emit("freshToDoListCreatedAndSent", this.freshToDoList)
-            console.log("This freshToDoList Was created, confirm cliched, event emitted, following    sent:\n" 
+            console.log("This freshToDoList Was created, confirm clicked, event emitted, following    sent:\n" 
                         + "name:" + this.freshToDoList.freshToDoListName + 
                         "\nclass:" + this.freshToDoList.freshToDoListClass + 
                         "\ntrimmedName" + this.freshToDoList.freshToDoListTrimmedName + 
                         "\ntasks" + this.freshToDoList.freshToDoListsTasksArray);
+            console.log(this.freshToDoList);
             
             //clear all fields:
             this.freshToDoListName='';
