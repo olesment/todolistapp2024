@@ -42,7 +42,7 @@
                         <!--FOR FURTHER IMPLEMENTATION 
                             Edit and delete buttons should be next to or after the task for the case when user would want to change something in the task. Ideally there should be only delete buttonand edit it would be nice to have A field where user could place a curson and edit on the fly-->
                                 <button v-on:click="editTaskInFreshToDoListTasksArray(index, freshTask.name)" id="freshToDoListsTaskEditButton">Edit</button>
-                                <button v-on:click="deleteTaskInFreshToDoListTasksArray" id="freshToDoListsTaskDeleteButton">Delete</button>
+                                <button v-on:click="deleteTaskInFreshToDoListTasksArray(index)" id="freshToDoListsTaskDeleteButton">Delete</button>
                                 
                         </div>  
                     </div>
@@ -122,7 +122,7 @@ export default
             this.$refs.freshToDoListNewTaskNameInputField.focus();
         },
         deleteTaskInFreshToDoListTasksArray: function(index){
-            this.freshToDoList.freshToDoListsTasksArray.splice(index-1,1);
+            this.freshToDoList.freshToDoListsTasksArray.splice(index,1);
         },
         editTaskInFreshToDoListTasksArray: function(index, newTaskName){
             //makes the task name editing dialog visible
