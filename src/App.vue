@@ -6,11 +6,13 @@
       v-show="isToDoCreationModalVisible"
       @close="closeToDoCreateModal"
       :to-do-lists="toDoLists" 
-      @toDoListCreated="handleCreatedToDoList"
+      @toDoListCreated="handleCreatedToDoList" 
       @newTaskCreated="handleNewTask"
     />
     <div v-for="(toDoList, index) in toDoLists" :key="index">
-        {{ toDoList.fullName }} - {{ toDoList.class }}
+        {{ toDoList.fullName }} - {{ toDoList.class }} - Tasks:
+        <div v-for="(task, taskIndex) in toDoList.tasks" :key="taskIndex"> {{ task.name }}</div>
+        <!--div v-for="(toDoLists.toDoList.tasks, index) in toDoLists.toDoList.tasks" :key="index">{{  }}</!--div-->
       <button></button>
     </div> 
   </div>
@@ -35,8 +37,9 @@ export default {
     showCreateTodoModal(){
       this.isToDoCreationModalVisible = true;
     },
-    handleCreatedtoDoList(newToDoList){
-      this.toDoLists.push(newToDoList);
+    handleCreatedToDoList(toDoList){
+      console.log('Handling created to-do list:', toDoList);
+      this.toDoLists.push(toDoList);
       this.isToDoCreationModalVisible=false;
     },
     closeToDoCreateModal(){
