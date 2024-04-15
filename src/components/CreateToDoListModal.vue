@@ -153,7 +153,7 @@ export default
                         "\nclass:" + this.freshToDoList.freshToDoListClass + 
                         "\ntrimmedName" + this.freshToDoList.freshToDoListTrimmedName + 
                         "\ntasks" + this.freshToDoList.freshToDoListsTasksArray);
-            console.log(this.freshToDoList);
+            console.log(this.freshToDoList+'.');
             
             //clear all fields:
             this.freshToDoListName='';
