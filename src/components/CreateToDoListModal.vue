@@ -80,7 +80,7 @@ export default
             freshToDoListPreview:false,
             taskNameChangeVisibilityToggleDiv:false,
             newTaskName:'',
-            isBeingEdited:false
+            isBeingEdited:false //necessary component to be able invoke editing input for specific task beoing edited, not for all tasks
         };
     },
     methods: 

@@ -1,20 +1,14 @@
 <template>
   <div id="createApp">
-    <button type="button" class="createToDoModalVisibilityToggle" @click = "showCreateTodoModal" @freshToDoListCreationModalClosed="closeModal">Create New Todo List</button>
+    <button type="button" class="createToDoModalVisibilityToggle" @click = "showCreateTodoModal" >Create New Todo List</button>
 
-    <CreateToDoListModal @freshToDoListCreationModalClosed="closeModal"
-    
-      @freshToDoListCreatedAndSent="handleFreshToDoInApp"    
-
-      v-show="isToDoCreationModalVisible"
-      @close="closeToDoCreateModal"
-      :to-do-lists="toDoLists" 
-      @toDoListCreated="handleCreatedToDoList" 
-      @newTaskCreated="handleNewTask"
-    />
-    <div v-for="(toDoList, index) in toDoLists" :key="index">
-        {{ toDoList.fullName }} - {{ toDoList.class }} - Tasks:
-        <div v-for="(task, taskIndex) in toDoList.tasks" :key="taskIndex"> {{ task.name }}</div>
+    <CreateToDoListModal v-show="isToDoCreationModalVisible" 
+                         @freshToDoListCreationModalClosed="closeModal"    
+                         @freshToDoListCreatedAndSent="handleFreshToDoInApp"                       
+                         />
+    <div v-for="(toDoList, index) in toDoListsBank" :key="index">
+        {{ toDoList.toDoListName }} - {{ toDoList.toDoListClass }} - Tasks:
+        <div v-for="(task, taskIndex) in toDoList.toDoListTasksArray" :key="taskIndex"> {{ task.name }}</div>
         <!--div v-for="(toDoLists.toDoList.tasks, index) in toDoLists.toDoList.tasks" :key="index">{{  }}</!--div-->
       <button></button>
     </div> 
@@ -32,21 +26,35 @@ export default {
   },
   data() {
     return{
-      toDoLists:[],
-      isToDoCreationModalVisible:false,
+      toDoListsBank:[], // Array that holds in it toDo Lists that are manipulated on the main page
+      isToDoCreationModalVisible:false, // modal visibility toggle property
+      //Empty object to give tasks from freshToDoList that come from Modal same parameters
+      processedToDoListArray: 
+            { 
+              toDoListName:'',
+              toDoListTrimmedName:'',
+              toDoListClass:'',
+              toDoListTasksArray:[],
+            }
     };
   },
   methods:{
     showCreateTodoModal(){
       this.isToDoCreationModalVisible = true;
     },
-    handleCreatedToDoList(toDoList){
-      console.log('Handling created to-do list:', toDoList);
-      this.toDoLists.push(toDoList);
-      this.isToDoCreationModalVisible=false;
-    },
-    closeToDoCreateModal(){
-      this.isToDoCreationModalVisible = false;
+    handleFreshToDoInApp(freshToDoList){
+      //tasks need to get on same state
+      freshToDoList.freshToDoListsTasksArray.forEach(task => {task.isEdited=false;}); 
+      console.log("this is fresh toDoList after adding iS Edited", freshToDoList);
+      this.processedToDoList={
+        toDoListName:        freshToDoList.freshToDoListName,
+        toDoListClass:       freshToDoList.freshToDoListClass,
+        toDoListTrimmedName: freshToDoList.freshToDoListTrimmedName,
+        toDoListTasksArray:  freshToDoList.freshToDoListsTasksArray
+      };
+      this.toDoListsBank.push(this.processedToDoList);
+      console.log("This Is Processed To Do List", this.processedToDoList)
+      console.log("This Is state of the bank after processing", this.toDoListsBank); // check - whats in the Bank?
     },
     closeModal(){
       this.isToDoCreationModalVisible = false;
