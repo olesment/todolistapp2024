@@ -6,11 +6,12 @@
                          @freshToDoListCreationModalClosed="closeModal"    
                          @freshToDoListCreatedAndSent="handleFreshToDoInApp"                       
                          />
-    <div v-for="(toDoList, index) in toDoListsBank" :key="index">
-        {{ toDoList.toDoListName }} - {{ toDoList.toDoListClass }} - Tasks:
-        <div v-for="(task, taskIndex) in toDoList.toDoListTasksArray" :key="taskIndex"> {{ task.name }}</div>
-        <!--div v-for="(toDoLists.toDoList.tasks, index) in toDoLists.toDoList.tasks" :key="index">{{  }}</!--div-->
-      <button></button>
+    <div id="toDoLists" v-for="(toDoList, index) in toDoListsBank" :key="index">
+        Name: {{ toDoList.toDoListName }} Class: {{ toDoList.toDoListClass }} <br>
+        Tasks:
+        <div v-for="(task, taskIndex) in toDoList.toDoListTasksArray" :key="taskIndex"> 
+          <div><input type="checkbox"/><label>{{ task.name }}</label><button>Placeholder</button></div>
+        </div>
     </div> 
   </div>
 </template>
