@@ -10,7 +10,8 @@
         Name: {{ toDoList.toDoListName }} Class: {{ toDoList.toDoListClass }} <br>
         Tasks:
         <div v-for="(task, taskIndex) in toDoList.toDoListTasksArray" :key="taskIndex"> 
-          <div><input type="checkbox"/><label>{{ task.name }}</label><button>Placeholder</button></div>
+          <div><input type="checkbox" />
+            <!--v-model="task.done" @change="updateTaskStatus(toDoList, taskIndex)"--><label>{{ task.name }}</label><button>Placeholder</button></div>
         </div>
     </div> 
   </div>
@@ -59,7 +60,10 @@ export default {
     },
     closeModal(){
       this.isToDoCreationModalVisible = false;
-    }
+    },
+    // updateTaskStatus(toDoList, taskIndex){
+    //   this.$set(toDoList.toDoListTasksArray, taskIndex, toDoList.toDoListTasksArray[taskIndex])
+    // }
     
 }
   }

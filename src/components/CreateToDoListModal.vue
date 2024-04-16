@@ -131,7 +131,7 @@ export default
         editTaskInFreshToDoListTasksArray: function(index, newTaskName){
             //makes the task name editing dialog visible
             this.taskNameChangeVisibilityToggleDiv=true;
-            //this.$set(this.freshToDoList.freshToDoListsTasksArray[index],'editing',true)
+            
             this.freshToDoList.freshToDoListsTasksArray[index].isBeingEdited='true';
             //deletes old task name hopefully
             newTaskName=this.newTaskName;
