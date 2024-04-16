@@ -167,8 +167,11 @@ export default
                 freshToDoListClass: '',
                 freshToDoListTrimmedName: '',
                 freshToDoListsTasksArray: []
+            //need to close the modal too now. 
+            
             };
             console.log("This freshToDoList state after the event was sent:", this.freshToDoList);
+            this.$emit("freshToDoListCreationModalClosed");
         }
     }   
 }

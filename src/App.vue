@@ -1,8 +1,11 @@
 <template>
   <div id="createApp">
-    <button type="button" class="createToDoModalVisibilityToggle" @click = "showCreateTodoModal">Create New Todo List</button>
+    <button type="button" class="createToDoModalVisibilityToggle" @click = "showCreateTodoModal" @freshToDoListCreationModalClosed="closeModal">Create New Todo List</button>
 
-    <CreateToDoListModal 
+    <CreateToDoListModal @freshToDoListCreationModalClosed="closeModal"
+    
+      @freshToDoListCreatedAndSent="handleFreshToDoInApp"    
+
       v-show="isToDoCreationModalVisible"
       @close="closeToDoCreateModal"
       :to-do-lists="toDoLists" 
@@ -45,6 +48,9 @@ export default {
     closeToDoCreateModal(){
       this.isToDoCreationModalVisible = false;
     },
+    closeModal(){
+      this.isToDoCreationModalVisible = false;
+    }
     
 }
   }
