@@ -6,13 +6,28 @@
                          @freshToDoListCreationModalClosed="closeModal"    
                          @freshToDoListCreatedAndSent="handleFreshToDoInApp"                       
                          />
+    <!--TODO MASTER DIV-->
     <div id="toDoLists" v-for="(toDoList, index) in toDoListsBank" :key="index">
-        Name: {{ toDoList.toDoListName }} Class: {{ toDoList.toDoListClass }} <br>
-        Tasks:
-        <div v-for="(task, taskIndex) in toDoList.toDoListTasksArray" :key="taskIndex"> 
-          <div><input type="checkbox" />
-            <!--v-model="task.done" @change="updateTaskStatus(toDoList, taskIndex)"--><label>{{ task.name }}</label><button>Placeholder</button></div>
+      <span>Name: {{ toDoList.toDoListName }} Class: {{ toDoList.toDoListClass }} <br></span>
+      Tasks:
+    <!--TASK-LIST CLASS-->
+      <div class="task-list">
+    <!--INDIVIDUAL TASK DIV-->
+        <div class="task-item" v-for="(task, taskIndex) in toDoList.toDoListTasksArray" :key="taskIndex"> 
+          <div class="checkbox-container">
+            <input 
+              type="checkbox" 
+              :id="'checkbox-' + taskIndex"
+              :checked="toDoList.toDoListTasksArray[taskIndex].done" 
+              :key="taskIndex" 
+              v-on:click="toggleTaskStatus(toDoList, taskIndex)"
+              />
+            <label :for="'checkbox-' + taskIndex"><!--See ongi effectively mu checkbox, siia ei tohi midagi kirjutada, muidu renderdab CB sees. Siia ri tohi panna ka @ click, millel on sama nimi, mis on ka [lesandel, kuna label triggerdab ka CB [leval, mis siis omakorda eemaldab 2 list itemit--></label>
+            <div class="task-name" @click="toggleTaskStatus(toDoList, taskIndex)">{{ task.name }}</div>
+          </div>
+          <button>Placeholder</button>
         </div>
+      </div>
     </div> 
   </div>
 </template>
@@ -61,9 +76,13 @@ export default {
     closeModal(){
       this.isToDoCreationModalVisible = false;
     },
-    // updateTaskStatus(toDoList, taskIndex){
-    //   this.$set(toDoList.toDoListTasksArray, taskIndex, toDoList.toDoListTasksArray[taskIndex])
-    // }
+    toggleTaskStatus(toDoList, taskIndex){
+      toDoList.toDoListTasksArray[taskIndex].done = !toDoList.toDoListTasksArray[taskIndex].done;
+      if (toDoList.toDoListTasksArray[taskIndex].done===true) {
+        toDoList.toDoListTasksArray.splice(taskIndex, 1);
+      }
+      console.log(toDoList.toDoListTasksArray);
+    }
     
 }
   }
@@ -71,5 +90,36 @@ export default {
 </script>
 
 <style>
-/* Your styles here */
+
+.task-list{
+  outline: 1px solid red;
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  column-gap:10px;
+}
+.task-item{
+  outline: 1px solid red;
+}
+input[type="checkbox"]{
+  display:none;
+  
+}
+input[type="checkbox"]+label{
+  display:inline-block;
+  width:20px;
+  height:20px;
+  background-color:#fff;
+  border:1px solid #ccc;
+  cursor:pointer;
+}
+/* input[type="checkbox"]:checked+label{
+  background-color: #007bff;
+  border-color:#007bff;
+} */
+label{
+  margin:0;
+}
+
+
 </style>
