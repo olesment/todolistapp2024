@@ -7,9 +7,13 @@
                          @freshToDoListCreatedAndSent="handleFreshToDoInApp"                       
                          />
     <!--TODO MASTER DIV-->
-    <div id="toDoLists" v-for="(toDoList, index) in toDoListsBank" :key="index">
+    <div id="toDoLists" 
+         v-for="(toDoList, index) in toDoListsBank" 
+         :key="index">
       <span>Name: {{ toDoList.toDoListName }} Class: {{ toDoList.toDoListClass }} <br></span>
       Tasks:
+      <!--TASK EDITING INVOCATION BUTTON-->
+      <button @click="openTasksEditingModal(toDoList)">Edit Tasks</button>
        <!--TASK-LIST CLASS-->
        <div class="task-list">
        <!--INDIVIDUAL TASK DIV-->
@@ -45,18 +49,24 @@
           </div>
         </div>
       </div>
-    </div> 
+    </div>
+    <tasks-editing-modal
+      :tasks="currentTasks"
+      :isVisible="isTasksEditingModalVisible"
+      @close-modal="closeTasksEditingModal"
+      @update-tasks="updateTasks"/>
   </div>
 </template>
 
 <script>
 //import { createApp } from 'vue';
 import CreateToDoListModal from './components/CreateToDoListModal.vue'
-
+import TasksEditingModal from './components/TasksEditingModal.vue'
 export default {
   name: 'App',
   components: {
-    CreateToDoListModal
+    CreateToDoListModal,
+    TasksEditingModal
   },
   data() {
     return{
@@ -70,7 +80,12 @@ export default {
               toDoListClass:'',
               toDoListTasksArray:[],
               doneTasksArray:[]
-            }
+            },
+      
+      //TasksEditingModal parts
+      isModalVisible:false,
+      currentTasks:[],
+      currentListIndex:null
     };
   },
   methods:{
@@ -109,20 +124,37 @@ export default {
     toggleTaskStatus(toDoList, task){
       task.done = true;
  
-      if (task.done===true) {
-         const index = toDoList.toDoListTasksArray.indexOf(task);
-      if (index > -1) {
-        toDoList.doneTasksArray.push(task);
-        toDoList.toDoListTasksArray.splice(index, 1);
+        if (task.done===true) {
+          const index = toDoList.toDoListTasksArray.indexOf(task);
+        if (index > -1) {
+          toDoList.doneTasksArray.push(task);
+          toDoList.toDoListTasksArray.splice(index, 1);
+        }
       }
+      //State check
+      console.log(JSON.stringify(toDoList.toDoListTasksArray));
+      console.log("This is done tasks array" + JSON.stringify(toDoList.doneTasksArray));
+    },
+    openTasksEditingModal(toDoList){
+      this.currentTasks = toDoList.toDoListTasksArray;
+      this.currentListIndex=this.toDoListsBank.indexOf(toDoList);
+      this.isTasksEditingModalVisible=true;
+    },
+    updateTasks(updatedTasks){
+      if(this.currentListIndex !==null){
+        this.toDoListsBank[this.currentListIndex].toDoListTasksArray = updatedTasks;
+      }
+      this.isTasksEditingModalVisible=false;
+    },
+    closeTasksEditingModal() {
+      console.log('Closing modal now' + this.isTasksEditingModalVisible);
+      this.isTasksEditingModalVisible=false;
+      this.$nextTick(() => {
+      console.log('Modal should be closed now' + this.isTasksEditingModalVisible);
+    });
     }
-    //State check
-    console.log(JSON.stringify(toDoList.toDoListTasksArray));
-    console.log("This is done tasks array" + JSON.stringify(toDoList.doneTasksArray));
-    }
-    
-}
   }
+}
 
 </script>
 
