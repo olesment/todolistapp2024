@@ -10,23 +10,38 @@
     <div id="toDoLists" v-for="(toDoList, index) in toDoListsBank" :key="index">
       <span>Name: {{ toDoList.toDoListName }} Class: {{ toDoList.toDoListClass }} <br></span>
       Tasks:
-    <!--TASK-LIST CLASS-->
-      <div class="task-list">
-    <!--INDIVIDUAL TASK DIV-->
-        <div class="task-item" v-for="task in toDoList.toDoListTasksArray" :key="task.id"> 
+       <!--TASK-LIST CLASS-->
+       <div class="task-list">
+       <!--INDIVIDUAL TASK DIV-->
+        <div class="task-item" 
+             v-for="task in toDoList.toDoListTasksArray" 
+             :key="task.id">
+
           <div class="checkbox-container">
-            <input 
-            type="checkbox" 
-            :id="'checkbox-' + task.id"
-            @click="toggleTaskStatus(toDoList, task)"
-            />
+            <input type="checkbox" 
+                   :id="'checkbox-' + task.id"
+                   @click="toggleTaskStatus(toDoList, task)"/>
           </div>
+
           <div class="task-name" 
                @click="toggleTaskStatus(toDoList, task)">
-                {{ task.name }}
+               {{ task.name }}
           </div>
+
           <div class="placeholder-btn-container">
-            <button>Placeholder</button>
+            <button>Edit/Delete</button>
+          </div>
+        </div>
+
+        <!---DONE TASKS SECTION-->
+        <div class="done-tasks-container" 
+           v-if="toDoList.doneTasksArray.length>0">
+
+           <h3>Completed tasks</h3>
+           
+          <div class="done-task-items" 
+                v-for="doneTask in toDoList.doneTasksArray" :key="'doneTask' + doneTask.id" >
+                {{ doneTask.name }}
           </div>
         </div>
       </div>
@@ -54,6 +69,7 @@ export default {
               toDoListTrimmedName:'',
               toDoListClass:'',
               toDoListTasksArray:[],
+              doneTasksArray:[]
             }
     };
   },
@@ -77,7 +93,9 @@ export default {
         toDoListName:        freshToDoList.freshToDoListName,
         toDoListClass:       freshToDoList.freshToDoListClass,
         toDoListTrimmedName: freshToDoList.freshToDoListTrimmedName,
-        toDoListTasksArray:  freshToDoList.freshToDoListsTasksArray
+        toDoListTasksArray:  freshToDoList.freshToDoListsTasksArray,
+        // if this is not mentioned it gets booted from the composition
+        doneTasksArray:[] 
       };
       this.toDoListsBank.push(this.processedToDoList);
       //State check
@@ -90,15 +108,17 @@ export default {
     },
     toggleTaskStatus(toDoList, task){
       task.done = true;
-      //toDoList.toDoListTasksArray[taskIndex].done = !toDoList.toDoListTasksArray[taskIndex].done;
+ 
       if (task.done===true) {
          const index = toDoList.toDoListTasksArray.indexOf(task);
       if (index > -1) {
+        toDoList.doneTasksArray.push(task);
         toDoList.toDoListTasksArray.splice(index, 1);
       }
     }
     //State check
     console.log(JSON.stringify(toDoList.toDoListTasksArray));
+    console.log("This is done tasks array" + JSON.stringify(toDoList.doneTasksArray));
     }
     
 }
