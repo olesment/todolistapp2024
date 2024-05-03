@@ -1,6 +1,6 @@
 <template>
   <div id="createApp">
-    <button type="button" class="createToDoModalVisibilityToggle" @click = "showCreateTodoModal" >Create New Todo List</button>
+    <button type="button" class="showCreateTodoModal" @click = "showCreateTodoModal" >Create New Todo List</button>
 
     <CreateToDoListModal 
             @freshToDoListCreationModalClosed="closeModal"    
@@ -77,12 +77,10 @@ export default {
   },
   data() {
     return{
-      toDoListsBank:[], // Array that holds in it toDo 
-                        //Lists that are manipulated on the main page
+      //Array that holds all rendered ToDoListObjects
+      toDoListsBank:[], //Lists that are manipulated on the main page
 
-      //INITIAL TASKS CREATION MODAL PARTS   
-      //isToDoCreationModalVisible:false, // modal visibility toggle property
-                       
+      //Empty object to manipulate tasks that come from ToDoCreationModal's fresh toDoList                         
       processedToDoListArray:         // Empty object to give tasks from 
             {                         // freshToDoList
               toDoListName:'',        // that come from initial tasks 
@@ -103,9 +101,11 @@ export default {
   },
   methods:{
     showCreateTodoModal(){
-      //this.isToDoCreationModalVisible = true;
       this.$refs.createToDoListModal.open();
-      console.log("ToDoList Creation Modal should be open now");
+      console.log(`Location: App.vue
+Pressed: showCreateTodoModal
+Method: showCreateToDoModal()  
+Effect: ToDoList Creation Modal should be open now`)
     },
     handleFreshToDoInApp(freshToDoList){
       let taskIdTicker=1;
@@ -116,8 +116,17 @@ export default {
         task.id=`${freshToDoList.freshToDoListTrimmedName}-${taskIdTicker}`;
         taskIdTicker++;
       }); 
-      //State Check
-      console.log("this is fresh toDoList after adding iS Edited", freshToDoList);
+
+      this.freshToDoList = {...freshToDoList};
+
+      //State Check of the freshToDoListsTasksArrayAfter adding isEdited and id
+      console.log(`Location: App.vue
+FreshtoDoList was sent from CreateToDoListModal
+now so that isEdited value would get changed to same in all tasks in App.vue
+Method: showCreateToDoModal()  
+Effect: All tasks should have their property isEdited = false
+Tasks: ${JSON.stringify(this.freshToDoList.freshToDoListsTasksArray, null, 2)}`);
+
       //Maturing of fresh list to real list
       this.processedToDoList={
         toDoListName:        freshToDoList.freshToDoListName,
