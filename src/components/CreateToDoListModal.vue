@@ -1,6 +1,6 @@
 <template>
-    <div class="create-todo-modal-backdrop">
-        <div class="create-todo-modal">
+    <div v-show="isModalVisible" class="create-todo-modal-backdrop">
+        <div  class="create-todo-modal">
             <header class="create-todo-modal-header">{{ message }}</header>
             <body class="create-todo-modal-body">
                 <!--input for Fresh Todo Lists name-->
@@ -65,13 +65,14 @@ export default
     data()
     {
         return {
+            isModalVisible:false,
             freshToDoList:{
                 freshToDoListName:'',
                 freshToDoListClass:'',
                 freshToDoListTrimmedName:'',
                 freshToDoListsTasksArray: []
             },
-            //freshToDoListTasks:[], this i think is unnecessary, id like to access fresh toDoList tasks in the freshToDoList tasks array directly. 
+            //freshToDoListTasks:[], this i think is unnecessary, id like to access fresh toDoList tasks in the freshToDoList tasks array directly.
             freshToDoListCustomClass:'',
             freshToDoListNewTaskName:'', // Ensures that corresponding input is empty in the beginning.
             message: "Create and name ToDoList",
@@ -85,6 +86,9 @@ export default
     },
     methods: 
     {   
+        open(){
+          this.isModalVisible=true;  
+        },
         createFreshToDoList: function(){
             const freshToDoListTrimmedName = this.freshToDoListName.trim().toLowerCase().replace(/\s/g, '');
             
@@ -172,6 +176,7 @@ export default
             };
             console.log("This freshToDoList state after the event was sent:", this.freshToDoList);
             this.$emit("freshToDoListCreationModalClosed");
+            this.isModalVisible=false;
         }
     }   
 }

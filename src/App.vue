@@ -2,10 +2,9 @@
   <div id="createApp">
     <button type="button" class="createToDoModalVisibilityToggle" @click = "showCreateTodoModal" >Create New Todo List</button>
 
-    <CreateToDoListModal v-show="isToDoCreationModalVisible" 
-                         @freshToDoListCreationModalClosed="closeModal"    
-                         @freshToDoListCreatedAndSent="handleFreshToDoInApp"                       
-                         />
+    <CreateToDoListModal 
+            @freshToDoListCreationModalClosed="closeModal"    
+            @freshToDoListCreatedAndSent="handleFreshToDoInApp"                 ref="createToDoListModal"      />
     <!--TODO MASTER DIV-->
     <div id="toDoLists" 
          v-for="(toDoList, index) in toDoListsBank" 
@@ -82,7 +81,7 @@ export default {
                         //Lists that are manipulated on the main page
 
       //INITIAL TASKS CREATION MODAL PARTS   
-      isToDoCreationModalVisible:false, // modal visibility toggle property
+      //isToDoCreationModalVisible:false, // modal visibility toggle property
                        
       processedToDoListArray:         // Empty object to give tasks from 
             {                         // freshToDoList
@@ -104,7 +103,9 @@ export default {
   },
   methods:{
     showCreateTodoModal(){
-      this.isToDoCreationModalVisible = true;
+      //this.isToDoCreationModalVisible = true;
+      this.$refs.createToDoListModal.open();
+      console.log("ToDoList Creation Modal should be open now");
     },
     handleFreshToDoInApp(freshToDoList){
       let taskIdTicker=1;
@@ -132,8 +133,9 @@ export default {
       //State check
       console.log("This Is state of the bank after processing", this.toDoListsBank); 
     },
-    closeModal(){
-      this.isToDoCreationModalVisible = false;
+    closeCreateToDoModal(){
+      this.$refs.createToDoListModal.confirmNewToDoListAndEndCreation();
+      //this.isToDoCreationModalVisible = false;
     },
     toggleTaskStatus(toDoList, task){
       task.done = true;
