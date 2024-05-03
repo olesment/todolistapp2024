@@ -1,5 +1,7 @@
 <template>
-    <div v-show="isModalVisible" class="create-todo-modal-backdrop">
+    <div v-show="isModalVisible" 
+         class="create-todo-modal-backdrop"
+         @click.self="close">
         <div  class="create-todo-modal">
             <header class="create-todo-modal-header">{{ message }}</header>
             <body class="create-todo-modal-body">
@@ -30,7 +32,9 @@
                     <div v-if="freshToDoList.freshToDoListsTasksArray !=='' ">   
                         <!--For each task this should create a DIV that exerts the tasks in the preview and adds edit and delete button behind the task-->
                         <div id="freshToDoListTasksPreviewDiv" 
-                                v-for="(freshTask, index) in freshToDoList.freshToDoListsTasksArray" :key="index">{{ freshTask.done ? 'Done' : 'Not Done' }} - {{ freshTask.name }}
+                                v-for="(freshTask, index) in freshToDoList.freshToDoListsTasksArray" 
+                                :key="index">
+                                    {{ freshTask.done ? 'Done' : 'Not Done' }} - {{ freshTask.name }}
                                 <div v-if="taskNameChangeVisibilityToggleDiv"> 
                                     <div v-if="freshTask.isBeingEdited">
                                         <input v-model="newTaskName" 
@@ -52,6 +56,7 @@
                 </div>
                 <footer class="create-todo-modal-footer"> 
                     <button id="confirmCreationAndEndbtn" @click="confirmNewToDoListAndEndCreation">Confirm fresh to Do list creation</button>
+                    <button id="modalClosingButton" @click="close">Close</button>
                 </footer>
             </body>
         </div>
@@ -136,7 +141,7 @@ export default
             //makes the task name editing dialog visible
             this.taskNameChangeVisibilityToggleDiv=true;
             
-            this.freshToDoList.freshToDoListsTasksArray[index].isBeingEdited='true';
+            this.freshToDoList.freshToDoListsTasksArray[index].isBeingEdited=true;
             //deletes old task name hopefully
             newTaskName=this.newTaskName;
             this.freshToDoList.freshToDoListsTasksArray[index].name=newTaskName;
@@ -147,6 +152,7 @@ export default
             this.freshToDoList.freshToDoListsTasksArray[index].name=this.newTaskName;
             this.newTaskName='';
             //closes the task name editing dialog. 
+            this.freshToDoList.freshToDoListsTasksArray[index].isBeingEdited=false;
             this.taskNameChangeVisibilityToggleDiv=false;
             
         },
@@ -177,7 +183,32 @@ export default
             console.log("This freshToDoList state after the event was sent:", this.freshToDoList);
             this.$emit("freshToDoListCreationModalClosed");
             this.isModalVisible=false;
+        },
+        close(){
+            this.freshToDoListName='';
+            this.freshToDoListCustomClass='';
+            this.freshToDoListPreview=false;
+            this.freshToDoListNewTaskName='';
+            this.freshToDoListsTasksArray=[];
+            this.freshToDoList = {
+                freshToDoListName: '',
+                freshToDoListClass: '',
+                freshToDoListTrimmedName: '',
+                freshToDoListsTasksArray: []
+            }
+            this.isModalVisible=false;
+        },
+        handleEscapeKey(event){
+            if(event.key==='Escape'){
+                this.close();
+            }
         }
+    },
+    mounted(){
+        document.addEventListener('keydown', this.handleEscapeKey);
+    },
+    beforeUnmount(){
+        document.removeEventListener('keydown', this.handleEscapeKey)
     }   
 }
 
