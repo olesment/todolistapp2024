@@ -11,6 +11,14 @@
          v-for="(toDoList, index) in toDoListsBank" 
          :key="index">
       <span>Name: {{ toDoList.toDoListName }} Class: {{ toDoList.toDoListClass }} <br></span>
+
+      <!--PLACE FOR ADDING NEW TASK WITHIN A RENDERED TODO-->
+      <input class="new-task-adding-input-field" 
+             placeholder="New Task Name Here" 
+             v-model="newTaskName[toDoList.id]"/>
+
+      <button class="task-adding-button" 
+              @click="addTaskToThisTasksList(toDoList)">Add new task</button>
       Tasks:
       <!--TASK EDITING INVOCATION BUTTON-->
       <button @click="openTasksEditingModal(toDoList)">Edit Tasks</button>
@@ -51,10 +59,10 @@
       </div>
     </div>
     <tasks-editing-modal
+      ref="tasksEditingModal"
       :tasks="currentTasks"
-      :isVisible="isTasksEditingModalVisible"
-      @close-modal="closeTasksEditingModal"
-      @update-tasks="updateTasks"/>
+      @update-tasks="updateTasks"
+      @close-modal="closeTasksEditingModal"/>
   </div>
 </template>
 
@@ -70,22 +78,28 @@ export default {
   },
   data() {
     return{
-      toDoListsBank:[], // Array that holds in it toDo Lists that are manipulated on the main page
+      toDoListsBank:[], // Array that holds in it toDo 
+                        //Lists that are manipulated on the main page
+
+      //INITIAL TASKS CREATION MODAL PARTS   
       isToDoCreationModalVisible:false, // modal visibility toggle property
-      //Empty object to give tasks from freshToDoList that come from Modal same parameters
-      processedToDoListArray: 
-            { 
-              toDoListName:'',
-              toDoListTrimmedName:'',
+                       
+      processedToDoListArray:         // Empty object to give tasks from 
+            {                         // freshToDoList
+              toDoListName:'',        // that come from initial tasks 
+              toDoListTrimmedName:'', // creating modal same parameters
               toDoListClass:'',
               toDoListTasksArray:[],
               doneTasksArray:[]
             },
       
-      //TasksEditingModal parts
-      isModalVisible:false,
+      
+      //TASKS EDITING MODAL PARTS
       currentTasks:[],
-      currentListIndex:null
+      currentListIndex:null,
+
+      //empty object for adding new tasks within a toDoList
+      newTaskName:{}
     };
   },
   methods:{
@@ -136,22 +150,34 @@ export default {
       console.log("This is done tasks array" + JSON.stringify(toDoList.doneTasksArray));
     },
     openTasksEditingModal(toDoList){
+      this.$refs.tasksEditingModal.open();
       this.currentTasks = toDoList.toDoListTasksArray;
       this.currentListIndex=this.toDoListsBank.indexOf(toDoList);
-      this.isTasksEditingModalVisible=true;
     },
     updateTasks(updatedTasks){
       if(this.currentListIndex !==null){
         this.toDoListsBank[this.currentListIndex].toDoListTasksArray = updatedTasks;
       }
-      this.isTasksEditingModalVisible=false;
+      this.$refs.tasksEditingModal.close();
     },
     closeTasksEditingModal() {
       console.log('Closing modal now' + this.isTasksEditingModalVisible);
-      this.isTasksEditingModalVisible=false;
+      this.$refs.tasksEditingModal.close();
       this.$nextTick(() => {
       console.log('Modal should be closed now' + this.isTasksEditingModalVisible);
     });
+    },
+    addTaskToThisTasksList(toDoList){
+      const taskName = this.newTaskName[toDoList.id];
+      if (taskName && taskName.trim().length>0) {
+        const newTask = {
+          name: taskName,
+          done: false,
+          isEdited:false
+        };
+        toDoList.toDoListTasksArray.push(newTask);
+        this.newTaskName[toDoList.id]='';
+      }
     }
   }
 }

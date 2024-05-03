@@ -3,14 +3,24 @@ import { toDisplayString } from 'vue';
 
 import { TrackOpTypes } from 'vue';
 <template>
-    <div v-if="isVisible" class="modal">
-        <h3>Tasks Editor</h3>
-        <div v-for="(task, index) in tasksBeingEdited" :key="task.id">
-            <input v-model="task.name" placeholder="task.name" @input="editTask(index, task.name)"/>
-            <button @click="deleteTask(index)">Delete Task</button>
+    <div v-show="visible" id="tasks-editing-modal-backdrop">
+        <div  class="modal">
+            <div id="tasks-editing-modal-title>">
+                <h3>Tasks Editor</h3>
+                <a>Edit tasks names, click confirm after all editing is done</a>
+            </div>
+            <div class = "tasks-container" 
+                 v-for="(task, index) in tasksBeingEdited" :key="task.id">
+                <input v-model="task.name" 
+                        placeholder="{{ task.name }}" 
+                        @input="editTask(index, task.name)"/>
+                <button @click="deleteTask(index)">Delete Task</button>
+            </div>
+            <div class="end-buttons-container">
+                <button @click="confirmChanges">Confirm</button>
+                <button @click="close">Cancel</button>
+            </div>
         </div>
-        <button @click="confirmChanges">Confirm</button>
-        <button @click="closeModal">Cancel</button>
     </div>
 </template>
 
@@ -22,10 +32,15 @@ import { TrackOpTypes } from 'vue';
         },
         data(){
             return{
+                visible: this.isVisible, // This controls visibility 
+                                  //internally, moved fom above
                 tasksBeingEdited:[]
             };
         },
         watch:{
+            isVisible(newVal){
+                this.visible=newVal;
+            },
             tasks:{
                 handler(newVal){
                     this.tasksBeingEdited = JSON.parse(JSON.stringify(newVal));
@@ -34,6 +49,9 @@ import { TrackOpTypes } from 'vue';
             }
         },
         methods:{
+            open(){
+                this.visible = true;
+            },
             editTask(index, newName){
                 this.tasksBeingEdited[index].name = newName;
             },
@@ -42,13 +60,43 @@ import { TrackOpTypes } from 'vue';
             },
             confirmChanges(){
                 this.$emit('update-tasks', this.tasksBeingEdited);
-                this.closeModal();
+                this.close();
             },
-            closeModal(){
-                console.log("closeModal called, isVisible before set to false:", this.isVisible);
-                this.$emit('close-modal');
-                console.log("closeModal called, isVisible after set to false:", this.isVisible);
+            close(){
+                this.visible=false;
+
+                //this.$emit('close-modal');
             }  
         }
     }
 </script>
+
+<style>
+    #tasks-editing-modal-backdrop{
+        display:flex;
+        align-items:center;
+        justify-content: center;
+        position:fixed;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        
+        z-index:1000;
+    }
+    .modal{
+        display:flex;
+        flex-direction: column;
+        background-color:rgba(229, 143, 223, 0.6);
+        padding:20px;
+        border: 2px solid black;
+    }
+    .end-buttons-container{
+        display:flex;
+        flex-direction: row;
+        padding-top: 20px;
+    }
+    .tasks-container{
+        outline: 2px solkid black;
+    }
+</style>
