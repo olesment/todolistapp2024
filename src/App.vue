@@ -132,15 +132,27 @@ Tasks: ${JSON.stringify(this.freshToDoList.freshToDoListsTasksArray, null, 2)}`)
         toDoListName:        freshToDoList.freshToDoListName,
         toDoListClass:       freshToDoList.freshToDoListClass,
         toDoListTrimmedName: freshToDoList.freshToDoListTrimmedName,
-        toDoListTasksArray:  freshToDoList.freshToDoListsTasksArray,
         // if this is not mentioned it gets booted from the composition
-        doneTasksArray:[] 
+        doneTasksArray:[], 
+        toDoListTasksArray:  freshToDoList.freshToDoListsTasksArray  
       };
+
+      console.log(`Location: App.vue
+Item: processedToDoList
+After freshToDoList gets Id and isEdited updated
+Now freshToDoList gets remapped to processedToDoList
+now so that isEdited value would get changed to same in all tasks in App.vue 
+Effect: processedToDoList should have all the freshToDoList properties
+processedToDoList contents: ${JSON.stringify(this.processedToDoList, null, 2)}`);
       this.toDoListsBank.push(this.processedToDoList);
       //State check
-      console.log("This Is Processed To Do List", this.processedToDoList)
+      console.log(`Location: App.vue
+Item: ToDoListBank
+ProcessedtoDoList should get pushed to toDoListBank
+Effect: processedToDoList should have processedToDoListsTasksArray tasks that have all the freshToDoList initial and added
+ToDoListBanks contents: ${JSON.stringify(this.toDoListsBank, null, 2)}`);
       //State check
-      console.log("This Is state of the bank after processing", this.toDoListsBank); 
+      console.log("ToDoListBanks state after handleFreshTodo method ends", this.toDoListsBank); 
     },
     closeCreateToDoModal(){
       this.$refs.createToDoListModal.confirmNewToDoListAndEndCreation();
