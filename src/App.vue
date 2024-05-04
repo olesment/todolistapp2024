@@ -7,8 +7,9 @@
             @freshToDoListCreatedAndSent="handleFreshToDoInApp"                 ref="createToDoListModal"      />
     <!--TODO MASTER DIV-->
     <div id="toDoLists" 
-         v-for="(toDoList, index) in toDoListsBank" 
-         :key="index">
+         v-for="(toDoList, index) in activeToDoLists" 
+         :key="index"
+         >
       <span>Name: {{ toDoList.toDoListName }} Class: {{ toDoList.toDoListClass }} <br></span>
 
       <!--PLACE FOR ADDING NEW TASK WITHIN A RENDERED TODO-->
@@ -21,6 +22,7 @@
       Tasks:
       <!--TASK EDITING INVOCATION BUTTON-->
       <button @click="openTasksEditingModal(toDoList)">Edit Tasks</button>
+      
        <!--TASK-LIST CLASS-->
        <div class="task-list">
        <!--INDIVIDUAL TASK DIV-->
@@ -136,7 +138,7 @@ Tasks: ${JSON.stringify(this.freshToDoList.freshToDoListsTasksArray, null, 2)}`)
         doneTasksArray:[], 
         toDoListTasksArray:  freshToDoList.freshToDoListsTasksArray  
       };
-
+//STATE CHECK
       console.log(`Location: App.vue
 Item: processedToDoList
 After freshToDoList gets Id and isEdited updated
@@ -145,14 +147,14 @@ now so that isEdited value would get changed to same in all tasks in App.vue
 Effect: processedToDoList should have all the freshToDoList properties
 processedToDoList contents: ${JSON.stringify(this.processedToDoList, null, 2)}`);
       this.toDoListsBank.push(this.processedToDoList);
-      //State check
+//State check
       console.log(`Location: App.vue
 Item: ToDoListBank
 ProcessedtoDoList should get pushed to toDoListBank
 Effect: processedToDoList should have processedToDoListsTasksArray tasks that have all the freshToDoList initial and added
 ToDoListBanks contents: ${JSON.stringify(this.toDoListsBank, null, 2)}`);
       //State check
-      console.log("ToDoListBanks state after handleFreshTodo method ends", this.toDoListsBank); 
+      console.log("ToDoListBanks state after handleFreshTodo method ends in app.vue compare with abvoe", this.toDoListsBank); 
     },
     closeCreateToDoModal(){
       this.$refs.createToDoListModal.confirmNewToDoListAndEndCreation();
@@ -170,7 +172,10 @@ ToDoListBanks contents: ${JSON.stringify(this.toDoListsBank, null, 2)}`);
       }
       //State check
       console.log(JSON.stringify(toDoList.toDoListTasksArray));
-      console.log("This is done tasks array" + JSON.stringify(toDoList.doneTasksArray));
+      console.log(`Location: App.vue.
+Method:toggleTaskStatus
+Item:toDoList.doneTasksArray
+Effect: Check if the tasks done status has really changed` + JSON.stringify(toDoList.doneTasksArray));
     },
     openTasksEditingModal(toDoList){
       this.$refs.tasksEditingModal.open();
@@ -201,6 +206,11 @@ ToDoListBanks contents: ${JSON.stringify(this.toDoListsBank, null, 2)}`);
         toDoList.toDoListTasksArray.push(newTask);
         this.newTaskName[toDoList.id]='';
       }
+    }
+  },
+  computed:{
+    activeToDoLists(){
+      return this.toDoListsBank.filter(toDoList => toDoList.toDoListTasksArray.length>0);
     }
   }
 }
@@ -240,7 +250,7 @@ input[type="checkbox"]{
 
 .task-item>.task-name{
   text-align: center;
-  outline: 3px dashed rgb(30, 0, 255);
+  outline: 3px dashed rgb(207, 54, 221);
   cursor:pointer;
 }
 
